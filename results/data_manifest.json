@@ -1,0 +1,22 @@
+{
+  "data/raw/austin_commercial.csv": {
+    "bytes": 1872934,
+    "sha256": "e7600438ab00e859fd781f36e9da606edcb19223e516116d7cda0a69543d1be5"
+  },
+  "data/raw/austin_residential.csv": {
+    "bytes": 1449282,
+    "sha256": "fec826c7cecd7882d328d6a28fa9768d8eeb6e8801787e2d0619d41c3b47fd4c"
+  },
+  "data/raw/commercial_metadata.json": {
+    "bytes": 909,
+    "sha256": "6ec546d61c120b9ffe376263dbf8082b02a5722fb6730802d5cedce09ecb9690"
+  },
+  "data/raw/water_metadata.json": {
+    "bytes": 924,
+    "sha256": "2c54e9b3e913f65e076a7325e4e3552e6c00783989599f0d239f30203eb32a18"
+  },
+  "data/raw/weather.json": {
+    "bytes": 117859,
+    "sha256": "0126a21c47850dbc61e025ec617bc044a38c58e11a4df8be40710ad03f7e1887"
+  }
+}

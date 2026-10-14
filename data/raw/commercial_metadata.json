@@ -1,0 +1,33 @@
+{
+  "id": "5h9c-wmds",
+  "name": "Austin Water - Commercial Water Consumption",
+  "description": "Monthly commercial water consumption by zip code and  customer class.",
+  "publisher": "City of Austin / Austin Water",
+  "license": {
+    "name": "Public Domain"
+  },
+  "source_url": "https://data.austintexas.gov/d/5h9c-wmds",
+  "metadata_scope": "Dataset information only; staff contacts and internal catalog details omitted.",
+  "columns": [
+    {
+      "fieldName": "year_month",
+      "name": "Year Month",
+      "dataTypeName": "text"
+    },
+    {
+      "fieldName": "postal_code",
+      "name": "Postal Code",
+      "dataTypeName": "text"
+    },
+    {
+      "fieldName": "customer_class",
+      "name": "Customer Class",
+      "dataTypeName": "text"
+    },
+    {
+      "fieldName": "total_gallons",
+      "name": "Total Gallons",
+      "dataTypeName": "number"
+    }
+  ]
+}

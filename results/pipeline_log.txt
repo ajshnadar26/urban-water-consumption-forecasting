@@ -1,0 +1,132 @@
+{
+  "audit": {
+    "residential": {
+      "raw_rows": 26819,
+      "exact_duplicates_removed": 0,
+      "negative_adjustment_rows": 0
+    },
+    "commercial": {
+      "raw_rows": 35065,
+      "exact_duplicates_removed": 0,
+      "negative_adjustment_rows": 2
+    },
+    "missing_sector_months_ffilled": 0,
+    "excluded_classes_gallons_all_source_dates": {
+      "Austin Water Utility": 628229800.0,
+      "Wholesale": 37437983200.0
+    },
+    "analysis_rows": 156,
+    "start": "2012-01-01",
+    "end": "2024-12-01",
+    "industrial_caveat": "Large volume is a billing-class proxy; the source does not identify industrial end-use.",
+    "scope": "Selected retail classes; wholesale and utility use excluded to avoid possible double counting."
+  },
+  "arima_order": [
+    2,
+    1,
+    2
+  ],
+  "adf_training": {
+    "0": {
+      "statistic": -0.15764196562490615,
+      "pvalue": 0.9433858313488982,
+      "lags": 11,
+      "nobs": 120,
+      "critical_values": {
+        "1%": -3.486055829282407,
+        "5%": -2.8859430324074076,
+        "10%": -2.5797850694444446
+      }
+    },
+    "1": {
+      "statistic": -9.693505564043024,
+      "pvalue": 1.1201239690723932e-16,
+      "lags": 10,
+      "nobs": 120,
+      "critical_values": {
+        "1%": -3.486055829282407,
+        "5%": -2.8859430324074076,
+        "10%": -2.5797850694444446
+      }
+    }
+  },
+  "selected_model": "Holt Winters",
+  "selection_rule": "Lowest 12-month validation RMSE; final 12 months reserved for test.",
+  "train_period": [
+    "2012-01-01",
+    "2022-12-01"
+  ],
+  "validation_period": [
+    "2023-01-01",
+    "2023-12-01"
+  ],
+  "test_period": [
+    "2024-01-01",
+    "2024-12-01"
+  ],
+  "forecast_period": [
+    "2025-01-01",
+    "2025-12-01"
+  ],
+  "forecast_note": "Historical-origin demonstration forecast, issued after December 2024; not a current 2026 forecast.",
+  "flagged_months": 4,
+  "ljung_box_12_pvalue": 0.03410808688359144,
+  "sector_shares": {
+    "Residential": 0.6315585649755688,
+    "Commercial": 0.26399049418120635,
+    "Large volume": 0.0867162619505049,
+    "Municipal": 0.01773467889271998
+  },
+  "metrics": [
+    {
+      "model": "Holt Winters",
+      "validation_MAE": 189.74089917016218,
+      "validation_RMSE": 241.5861646845423,
+      "validation_MAPE": 4.830598593512548,
+      "validation_MAPE_nonzero_n": 12,
+      "test_MAE": 250.1841212968623,
+      "test_RMSE": 299.8693782353362,
+      "test_MAPE": 6.70124943095593,
+      "test_MAPE_nonzero_n": 12
+    },
+    {
+      "model": "Seasonal naive",
+      "validation_MAE": 230.1774833333334,
+      "validation_RMSE": 345.4748497616338,
+      "validation_MAPE": 6.0505900273365185,
+      "validation_MAPE_nonzero_n": 12,
+      "test_MAE": 278.3613750000001,
+      "test_RMSE": 403.26497419065447,
+      "test_MAPE": 7.083382106869368,
+      "test_MAPE_nonzero_n": 12
+    },
+    {
+      "model": "Weather calendar regression",
+      "validation_MAE": 280.4971383601424,
+      "validation_RMSE": 382.1362403573456,
+      "validation_MAPE": 6.887113656127368,
+      "validation_MAPE_nonzero_n": 12,
+      "test_MAE": 191.49134278754045,
+      "test_RMSE": 250.13704581051024,
+      "test_MAPE": 5.014747154376228,
+      "test_MAPE_nonzero_n": 12
+    },
+    {
+      "model": "ARIMA",
+      "validation_MAE": 431.85132578699364,
+      "validation_RMSE": 519.9128339617927,
+      "validation_MAPE": 12.050513940699105,
+      "validation_MAPE_nonzero_n": 12,
+      "test_MAE": 215.6913763448869,
+      "test_RMSE": 245.98099960978425,
+      "test_MAPE": 6.128169257951766,
+      "test_MAPE_nonzero_n": 12
+    }
+  ],
+  "weather_correlations": {
+    "total_mg": 1.0,
+    "temperature_2m_mean": 0.7477230497621044,
+    "precipitation_sum": -0.06645632726021901
+  },
+  "python": "3.12.14"
+}

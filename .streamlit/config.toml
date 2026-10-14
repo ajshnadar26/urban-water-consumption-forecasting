@@ -1,0 +1,12 @@
+[global]
+developmentMode = false
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#00a6a0"
+backgroundColor = "#f4f8fb"
+secondaryBackgroundColor = "#eaf1f7"
+textColor = "#102f48"
+font = "sans-serif"

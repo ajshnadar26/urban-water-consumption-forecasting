@@ -1,0 +1,16 @@
+test_dashboard_controls (test_dashboard.DashboardTests.test_dashboard_controls) ... 2026-10-15 00:20:35.631 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+ok
+test_bad_input (test_system.SystemTests.test_bad_input) ... ok
+test_capacity_can_make_floors_infeasible (test_system.SystemTests.test_capacity_can_make_floors_infeasible) ... ok
+test_duplicates (test_system.SystemTests.test_duplicates) ... ok
+test_emergency_is_explicit (test_system.SystemTests.test_emergency_is_explicit) ... ok
+test_future_weather_cannot_leak_into_predictions (test_system.SystemTests.test_future_weather_cannot_leak_into_predictions) ... ok
+test_invalid_record (test_system.SystemTests.test_invalid_record) ... ok
+test_metrics_zero_handling (test_system.SystemTests.test_metrics_zero_handling) ... ok
+test_supply_and_caps (test_system.SystemTests.test_supply_and_caps) ... ok
+test_zero_demand (test_system.SystemTests.test_zero_demand) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 8.515s
+
+OK

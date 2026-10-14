@@ -1,0 +1,10 @@
+p,d,q,AIC,converged,warnings
+0,1,0,139.09450864125319,True,
+0,1,1,138.3123167316558,True,
+0,1,2,134.9047463355099,True,
+1,1,0,137.4197096888834,True,
+1,1,1,138.7801477049352,True,
+1,1,2,125.01980725043377,True,
+2,1,0,137.0200617601575,True,
+2,1,1,136.46358981272542,True,Non-stationary starting autoregressive parameters found. Using zeros as starting parameters.; Non-invertible starting MA parameters found. Using zeros as starting parameters.
+2,1,2,76.70763057001805,True,

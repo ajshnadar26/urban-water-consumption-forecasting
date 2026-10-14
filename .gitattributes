@@ -1,0 +1,4 @@
+# Keep source snapshots byte-for-byte identical so recorded hashes remain valid.
+data/raw/** -text
+*.png binary
+*.docx binary
