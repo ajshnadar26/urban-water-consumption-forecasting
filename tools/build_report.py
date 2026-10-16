@@ -53,13 +53,14 @@ def insert_after(anchor,text='',bold=False,pagebreak=False):
     for child in list(el):
         if child.tag!=qn('w:pPr'):el.remove(child)
     anchor._p.addnext(el);p=Paragraph(el,anchor._parent)
-    p.paragraph_format.keep_with_next=False
+    p.paragraph_format.keep_with_next=bold
     p.paragraph_format.space_after=Pt(6)
     run=p.add_run(text);run.bold=bold
-    if pagebreak:p.paragraph_format.page_break_before=True
+    # Keep sections in the normal text flow; headings remain with their content.
+    p.paragraph_format.page_break_before=False
     return p
 
-def page_before(index):original[index].paragraph_format.page_break_before=True
+def page_before(index):original[index].paragraph_format.page_break_before=False
 
 def code_after(anchor, source):
     for line in source.splitlines():
@@ -262,6 +263,28 @@ refs=[
 ]
 for ref in refs:anchor=insert_after(anchor,ref)
 
+# Add concise methodological theory beside the corresponding implementation.
+theory=insert_after(original[15],'Forecasting theory',bold=True)
+theory=insert_after(theory,'A monthly demand series can be interpreted as a combination of trend, seasonal variation and irregular changes. Trend describes persistent movement in the level, while seasonality repeats at a calendar frequency. Monthly water demand commonly has a twelve-month cycle. An additive decomposition expresses demand as level/trend plus a seasonal component and a residual. STL separates these components using local smoothing; its robust option reduces the influence of isolated extremes during decomposition without deleting the original observations.')
+theory=insert_after(theory,'ARIMA combines autoregression, differencing and moving-average error terms. The order p counts lagged observations, d counts ordinary differences and q counts lagged innovations. With first differencing, the model describes monthly changes rather than the original demand level. ACF measures correlation with earlier observations; PACF measures the association at a lag after accounting for intervening lags. These plots suggest candidate orders, while AIC balances fitted likelihood against parameter count. A lower AIC is useful for comparing candidates fitted to the same training series, but it does not guarantee better future forecasts.')
+theory=insert_after(theory,'Holt-Winters updates level, trend and seasonal states with exponentially declining weights on older observations. Seasonal naive forecasts repeat the previous annual cycle and provide a practical benchmark. Weather/calendar regression relates demand to temperature, rainfall and calendar features. Because future weather is unknown, this implementation substitutes historical monthly climatology. The comparison therefore measures performance under an available-information forecasting scenario.')
+theory=insert_after(original[22],'Stationarity and chronological evaluation',bold=True)
+theory=insert_after(theory,'Weak stationarity requires a constant mean and variance and an autocovariance determined by lag rather than calendar time. Rolling statistics reveal changes in these moments but do not establish stationarity by themselves. The ADF null hypothesis is a unit root; rejection supports evidence against that null under the test specification. Differencing can remove a stochastic trend, although seasonality or changing variance may remain. This is why visual diagnostics, ADF and residual checks are interpreted together.')
+theory=insert_after(theory,'Randomly shuffling a time series can let later observations influence earlier forecasts. A chronological split preserves the direction of information: training estimates parameters, validation chooses the model family and the final test evaluates that fixed choice. A future improvement is rolling-origin evaluation, which repeats this process at multiple forecast dates to examine how accuracy changes across seasons and years.')
+theory=insert_after(original[31],'Interpretation of forecast errors',bold=True)
+theory=insert_after(theory,'For observed demand y and prediction f over n months, MAE = sum(|y − f|)/n and RMSE = sqrt(sum((y − f)^2)/n). Both retain the demand unit; RMSE gives larger errors more weight and is therefore useful when severe shortages matter. MAPE = 100 × mean(|(y − f)/y|) over nonzero observations. It gives a percentage comparison but is undefined at zero and unstable near zero. A low average error does not imply that every peak-demand month is forecast accurately, so the month-by-month comparison remains necessary.')
+theory=insert_after(original[24],'Abnormal demand and allocation principles',bold=True)
+theory=insert_after(theory,'An unusual observation is not automatically a data error. The detector first removes the year-earlier seasonal baseline, then compares the residual with the median and median absolute deviation of earlier residuals. These robust statistics reduce the effect of isolated extremes on the alert threshold. Alerts identify months for investigation; incident records are needed to distinguish leaks, billing adjustments, restrictions and legitimate changes in demand.')
+theory=insert_after(theory,'Allocation is a constrained decision following forecasting. Minimum-service floors protect essential demand, while sector capacity limits represent the maximum water that can be delivered. Priority optimization assigns the remaining water to sectors with higher declared weights; proportional allocation spreads the remaining supply across eligible unmet demand. These are different policy choices. If available supply cannot satisfy the floors, the system must report infeasibility and quantify violations so operators can assess backup supply, restrictions or capacity restoration.')
+
+# Use compact continuous sections while preserving the original page dimensions.
+for paragraph in d.paragraphs:
+    paragraph.paragraph_format.space_before=Pt(3)
+    paragraph.paragraph_format.space_after=Pt(4)
+    if paragraph.style.name.startswith('Heading'):
+        paragraph.paragraph_format.keep_with_next=True
+for index in [2,29]:original[index].paragraph_format.keep_with_next=True
+
 # Preserve source geometry, headers, footers, images, opaque parts and style definitions.
 # Python-docx is used to add content; reference preserve-only parts are restored byte-for-byte.
 final=ROOT/'docs/CEP_Report.docx'
@@ -281,6 +304,10 @@ monochrome_parts=set()
 for name,content in list(parts.items()):
     if not name.startswith('word/') or not name.endswith('.xml'):continue
     xml=ET.fromstring(content)
+    # Remove the large repeated floating logo; the first-page college logo stays.
+    if name.startswith('word/header'):
+        for drawing in list(xml.iter('{'+W+'}drawing')):
+            drawing.getparent().remove(drawing)
     for color in xml.iter('{'+W+'}color'):
         run=color.getparent().getparent()
         if run.tag=='{'+W+'}r' and run.xpath('.//*[local-name()="rFonts"][@*[local-name()="ascii"]="Consolas"]'):continue
