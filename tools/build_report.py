@@ -16,6 +16,10 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
+from pygments import lex
+from pygments.lexers import PythonLexer
+from pygments.token import Token
+from docx.shared import RGBColor
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
@@ -56,6 +60,23 @@ def insert_after(anchor,text='',bold=False,pagebreak=False):
     return p
 
 def page_before(index):original[index].paragraph_format.page_break_before=True
+
+def code_after(anchor, source):
+    for line in source.splitlines():
+        p=insert_after(anchor);p.paragraph_format.space_after=Pt(2)
+        for kind,value in lex(line,PythonLexer()):
+            value=value.rstrip('\n')
+            if not value:continue
+            r=p.add_run(value);r.font.name='Consolas';r.font.size=Pt(9)
+            color='1F2937'
+            if kind in Token.Keyword:color='7C3AED'
+            elif kind in Token.Literal.String:color='18743B'
+            elif kind in Token.Literal.Number:color='B45309'
+            elif kind in Token.Name.Builtin:color='005F99'
+            elif kind in Token.Comment:color='64748B'
+            r.font.color.rgb=RGBColor.from_string(color)
+        anchor=p
+    return anchor
 
 def figure(anchor,path,caption,width=6.65):
     p=insert_after(anchor);p.paragraph_format.keep_with_next=True
@@ -109,8 +130,8 @@ def style_table(t,widths=None):
 # Architecture is generated from the implemented modules.
 fig,ax=plt.subplots(figsize=(10,3.5));ax.axis('off');ax.set_xlim(-.03,1.03);ax.set_ylim(0,1)
 boxes=[(.01,.62,.27,.23,'Austin retail billing\nDaily ERA5 weather'),(.36,.62,.27,.23,'Validation and monthly ETL\nCalendar and sector mapping'),(.72,.62,.27,.23,'Train → validation → test\nARIMA and alternatives'),(.72,.13,.27,.23,'Forecasts and metrics\nCausal anomaly screening'),(.36,.13,.27,.23,'Sector shares and allocation\nFloors, priorities and caps'),(.01,.13,.27,.23,'Streamlit decision support\nCharts and CSV downloads')]
-for x,y,w,h,label in boxes:
-    ax.add_patch(FancyBboxPatch((x,y),w,h,boxstyle='square,pad=.012',facecolor='white',edgecolor='black'))
+for i,(x,y,w,h,label) in enumerate(boxes):
+    ax.add_patch(FancyBboxPatch((x,y),w,h,boxstyle='square,pad=.012',facecolor=['#E0F2FE','#DCFCE7','#F3E8FF','#FEF3C7','#FFE4E6','#CCFBF1'][i],edgecolor='#475569'))
     ax.text(x+w/2,y+h/2,label,ha='center',va='center',fontsize=10,color='black')
 for a,b in [((.28,.73),(.36,.73)),((.63,.73),(.72,.73)),((.85,.62),(.85,.36)),((.72,.24),(.63,.24)),((.36,.24),(.28,.24))]:
     ax.annotate('',xy=b,xytext=a,arrowprops=dict(arrowstyle='->',color='black',lw=1.2))
@@ -120,7 +141,9 @@ replace(2,'DATA ANALYTICS AND VISUALIZATION DAV PROJECT REPORT')
 replace(4,'Project Title: Urban Water Consumption Forecasting and Smart Resource Allocation\nGroup No.: __________    Faculty Name: __________________    Submission Date: __________\nStudent Names and Roll Numbers')
 replace(5,'1. ____________________   2. ____________________   3. ____________________')
 replace(6,'4. ____________________   5. ____________________   6. ____________________')
-replace(7,'7. ____________________   8. ____________________   9. ____________________   10. ____________________')
+replace(7,'7. ____________________   8. ____________________   9. ____________________')
+member_anchor=insert_after(original[7],'10. ____________________   11. ____________________   12. ____________________')
+insert_after(member_anchor,'13. ____________________')
 body(10,'This project develops a time-series decision-support system for urban water demand and constrained distribution. City of Austin residential and commercial billing snapshots are combined with ERA5 weather data from Open-Meteo. The analysis covers 156 monthly observations from January 2012 to December 2024. Data validation, seasonal exploration, rolling statistics and the Augmented Dickey-Fuller test support model development. ARIMA is compared with Holt-Winters, seasonal naive and weather/calendar regression using chronological validation and testing. Holt-Winters is selected on 2023 validation and achieves 250.18 MG MAE, 299.87 MG RMSE and 6.70 percent MAPE on the 2024 holdout. A causal residual screen identifies four unusual months for review. Priority and proportional allocation scenarios enforce supply and capacity limits and expose infeasible minimum service. An interactive dashboard connects forecasts, anomalies and recommended actions. Operational deployment requires verified supply, infrastructure and priority-facility data.')
 body(12,'Municipal demand changes with season, weather, growth and consumer activity. Fixed distribution plans can produce shortages in some areas while leaving supply unused elsewhere. The engineering problem is to forecast demand, identify unusual consumption and recommend a transparent distribution strategy when aggregate supply or sector capacity is limited.')
 body(13,'Objectives are to validate water and weather data, quantify seasonality and stationarity, compare forecasting models fairly, screen abnormal demand and evaluate alternative allocations. The scope is selected retail billing classes in Austin. Large-volume billing is an industrial proxy and municipal billing is a priority-area proxy. Supply limits, lifeline shares and network capacities are scenario assumptions. The 2025 forecast is a historical experiment from December 2024, not a current 2026 operational forecast.')
@@ -167,8 +190,7 @@ for line in ['python -m venv .venv','.venv\\Scripts\\Activate.ps1','python -m pi
 anchor=insert_after(anchor,'Important implementation decisions',bold=True)
 anchor=insert_after(anchor,'ARIMA fitting scales MG to billion gallons for numerical conditioning and checks optimizer convergence, with a deterministic retry when necessary. Predictions are converted back to MG. The anomaly baseline is demand from the same month a year earlier; prior residuals provide a rolling median and MAD. A valid alert is retained in the training data. The dashboard labels ARIMA intervals separately from the selected-model point forecast and labels infeasible scenarios in red.')
 anchor=insert_after(anchor,'Code example',bold=True)
-for line in ['floors = minimum_fraction * demand','upper = np.minimum(demand, capacity)','feasible = supply >= floors.sum() and np.all(upper >= floors)','result = linprog(-priority, A_ub=np.ones((1, 4)),','                 b_ub=[supply], bounds=list(zip(floors, upper)))']:
-    anchor=insert_after(anchor,line);anchor.runs[0].font.name='Consolas';anchor.runs[0].font.size=Pt(9)
+anchor=code_after(anchor,'floors = minimum_fraction * demand\nupper = np.minimum(demand, capacity)\nfeasible = supply >= floors.sum() and np.all(upper >= floors)\nresult = linprog(-priority, A_ub=np.ones((1, 4)),\n                 b_ub=[supply], bounds=list(zip(floors, upper)))')
 
 replace(29,'DAV COMPLEX ENGINEERING PROBLEM RESULTS AND VALIDATION')
 body(31,'All 10 automated tests passed. Testing covered supply and capacity limits, minimum service, invalid inputs, duplicate records, zero demand, forecast metrics, future-weather leakage and dashboard controls. Predictions were evaluated on the 2024 test set, which was excluded from model selection.')
@@ -214,10 +236,16 @@ anchor=insert_after(anchor,'Decision support demonstration',bold=True,pagebreak=
 anchor=figure(anchor,Path('docs/dashboard_allocation.png'),'Figure 6  Dashboard showing the 75 percent supply scenario',width=6.8)
 anchor=insert_after(anchor,'The dashboard presents forecasts, model errors, weather patterns, stationarity tests, unusual demand and allocation results. Users can change the planning month, supply, sector capacity and allocation policy, then download the results as CSV files.')
 
+anchor=insert_after(anchor,'Notebook code and execution outputs',bold=True,pagebreak=True)
+anchor=insert_after(anchor,'notebooks/Urban_Water_Forecasting_Colab.ipynb contains the executable analysis and saved outputs. In Google Colab, select Runtime then Run all. Setup clones the public project and installs its dependencies. Subsequent cells reproduce preprocessing, forecasts, ADF diagnostics, anomaly alerts and allocation scenarios from the source snapshots. The submitted outputs were executed locally with a Jupyter kernel; the notebook includes setup for Colab execution.')
+anchor=code_after(anchor,'from src.pipeline import run\nrun()\ncomparison = pd.read_csv("results/metrics.csv")\ndisplay(comparison.round(2))\nalerts = pd.read_csv("results/anomalies.csv")\ndisplay(alerts.loc[alerts["flag"]])')
+anchor=figure(anchor,Path('docs/notebook_output.png'),'Figure 7  Executed notebook output showing forecast errors and anomaly alerts',width=6.8)
+anchor=insert_after(anchor,'The notebook saves tables and color plots in its output cells. results/notebook_outputs.md provides a separate readable record of metrics, ADF results, alerts, allocation comparisons and test output. Re-running uses the same chronological split and validation selection rule as the dashboard.')
+
 page_before(36)
 body(37,'')
 t=source_tables[1]
-while len(t.rows)<11:t.add_row()
+while len(t.rows)<14:t.add_row()
 for i,row in enumerate(t.rows[1:],1):
     for c,text in zip(row.cells,[f'{i}. ____________________','____________________','____________________________']):c.text=text
 style_table(t,[2.4,2.0,2.6])
@@ -243,8 +271,7 @@ with ZipFile(template) as src,ZipFile(final) as generated:
     for n in src.namelist():
         if n not in editable:parts[n]=src.read(n)
 
-# User-requested monochrome report: black type/borders, white table cells,
-# and native Word grayscale picture formatting (source raster files stay intact).
+# Black report typography and tables; retain color in pictures and code.
 from lxml import etree as ET
 W='http://schemas.openxmlformats.org/wordprocessingml/2006/main'
 A='http://schemas.openxmlformats.org/drawingml/2006/main'
@@ -254,6 +281,8 @@ for name,content in list(parts.items()):
     if not name.startswith('word/') or not name.endswith('.xml'):continue
     xml=ET.fromstring(content)
     for color in xml.iter('{'+W+'}color'):
+        run=color.getparent().getparent()
+        if run.tag=='{'+W+'}r' and run.xpath('.//*[local-name()="rFonts"][@*[local-name()="ascii"]="Consolas"]'):continue
         for attr in list(color.attrib):
             if ET.QName(attr).localname.startswith('theme'):del color.attrib[attr]
         color.set('{'+W+'}val','000000')
@@ -264,8 +293,8 @@ for name,content in list(parts.items()):
     for border in xml.xpath('//*[local-name()="tblBorders" or local-name()="tcBorders"]/*'):
         border.set('{'+W+'}color','000000')
     for blip in xml.iter('{'+A+'}blip'):
-        if blip.find('{'+A+'}grayscl') is None:ET.SubElement(blip,'{'+A+'}grayscl')
-    for image in xml.iter('{'+V+'}imagedata'):image.set('grayscale','t')
+        for effect in list(blip.findall('{'+A+'}grayscl')):blip.remove(effect)
+    for image in xml.iter('{'+V+'}imagedata'):image.attrib.pop('grayscale',None)
     new=ET.tostring(xml,xml_declaration=True,encoding='UTF-8',standalone=True)
     if new!=content:parts[name]=new;monochrome_parts.add(name)
 # Preserve full-resolution figure media in Word rather than automatic downsampling.
@@ -286,4 +315,4 @@ assert not mismatches,mismatches
 assert len(Document(final).sections)==len(Document(template).sections)
 print('Report saved:',final)
 print('Reference SHA-256:',hashlib.sha256(template.read_bytes()).hexdigest())
-print('Template geometry and source media preserved; monochrome styling applied.')
+print('Template geometry preserved; black typography and tables, color visuals and code.')

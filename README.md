@@ -19,7 +19,13 @@ python -m streamlit run app.py --global.developmentMode false --browser.gatherUs
 
 Open the local URL printed by Streamlit. The committed results allow the dashboard to run without rerunning the pipeline or accessing the internet. Rebuilding the report additionally requires the supplied report template path; the finished report is in `docs/CEP_Report.docx`.
 
-## Evidence and scope
+## Google Colab notebook and outputs
+
+Open [the executed notebook in Google Colab](https://colab.research.google.com/github/ajshnadar26/urban-water-consumption-forecasting/blob/main/notebooks/Urban_Water_Forecasting_Colab.ipynb) and select **Runtime → Run all**. The setup clones this public repository and installs its dependencies. The notebook reproduces the analysis from raw snapshots and displays cleaning checks, plots, ADF results, model errors, forecasts, alerts, allocation scenarios and tests.
+
+Saved output cells were executed locally in a Jupyter kernel; a hosted Colab run is not claimed. The same results are available as [a readable output record](results/notebook_outputs.md). Downloading the notebook preserves its code and outputs.
+
+## Data and analysis scope
 
 - 26,819 residential and 35,065 commercial source records from City of Austin public data; source snapshots extend from January 2012 through October 2025.
 - Analysis intentionally uses 156 complete calendar months, January 2012–December 2024, to make training, validation and testing comparable over full seasonal cycles.
@@ -103,6 +109,7 @@ data/raw/               Original public snapshots and metadata
 data/processed/         Joined monthly modeling table
 results/                Metrics, predictions, anomalies and scenario exports
 results/figures/        Generated analysis plots
+notebooks/              Executed Google Colab compatible notebook
 docs/                   Report, demonstration screenshots and guides
 ```
 
