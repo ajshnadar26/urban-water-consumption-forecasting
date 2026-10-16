@@ -233,13 +233,14 @@ anchor=table_after(anchor,['Sector','Demand MG','Floor MG','Priority MG','Propor
 anchor=insert_after(anchor,'At 35% supply, only 1,188.13 MG is available while the assumed minimum floors require approximately 1,956.88 MG. The system therefore reports infeasibility and an emergency fallback, including floor violations. Additional water, temporary distribution, demand restrictions or restored capacity are required. A sector cap below its floor also makes service infeasible even when aggregate supply is sufficient.')
 
 anchor=insert_after(anchor,'Decision support demonstration',bold=True,pagebreak=True)
-anchor=figure(anchor,Path('docs/dashboard_allocation.png'),'Figure 6  Dashboard showing the 75 percent supply scenario',width=6.8)
+anchor=figure(anchor,Path('docs/dashboard_allocation_uhd.jpg'),'Figure 6  Live dashboard showing the complete 75 percent supply scenario',width=6.8)
 anchor=insert_after(anchor,'The dashboard presents forecasts, model errors, weather patterns, stationarity tests, unusual demand and allocation results. Users can change the planning month, supply, sector capacity and allocation policy, then download the results as CSV files.')
 
 anchor=insert_after(anchor,'Notebook code and execution outputs',bold=True,pagebreak=True)
 anchor=insert_after(anchor,'notebooks/Urban_Water_Forecasting_Colab.ipynb contains the executable analysis and saved outputs. In Google Colab, select Runtime then Run all. Setup clones the public project and installs its dependencies. Subsequent cells reproduce preprocessing, forecasts, ADF diagnostics, anomaly alerts and allocation scenarios from the source snapshots. The submitted outputs were executed locally with a Jupyter kernel; the notebook includes setup for Colab execution.')
-anchor=code_after(anchor,'from src.pipeline import run\nrun()\ncomparison = pd.read_csv("results/metrics.csv")\ndisplay(comparison.round(2))\nalerts = pd.read_csv("results/anomalies.csv")\ndisplay(alerts.loc[alerts["flag"]])')
-anchor=figure(anchor,Path('docs/notebook_output.png'),'Figure 7  Executed notebook output showing forecast errors and anomaly alerts',width=6.8)
+anchor=figure(anchor,Path('docs/colab_analysis_cell_uhd.jpg'),'Figure 7  Real Google Colab capture of the complete analysis cell and saved output',width=6.8)
+anchor=insert_after(anchor,'Notebook verification code and output',bold=True,pagebreak=True)
+anchor=figure(anchor,Path('docs/colab_tests_cell_uhd.jpg'),'Figure 8  Real Google Colab capture of verification code and all test outputs',width=6.8)
 anchor=insert_after(anchor,'The notebook saves tables and color plots in its output cells. results/notebook_outputs.md provides a separate readable record of metrics, ADF results, alerts, allocation comparisons and test output. Re-running uses the same chronological split and validation selection rule as the dashboard.')
 
 page_before(36)
